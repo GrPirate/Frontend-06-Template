@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let $ = Symbol("$"); // 代表该字符节点是否是一个单词的最后一个字符。
+        class Tree {
+            constructor() {
+                this.root = Object.create(null);
+            }
+    
+            insert(word) {
+                let node = this.root;
+                for (let c of word) {
+                    if (!node[c]) {
+                        node[c] = Object.create(null);
+                    }
+                    node = node[c];
+                }
+    
+                // 如果该字符节点没有$，代表第一次生成该单词。
+                if (!($ in node)) {
+                    node[$] = 0;
+                }
+                // 用于后面判断哪个单词出现最多次。
+                node[$]++;
+            }
+    
+            most() {
+                let max = 0;
+                let maxWord = null;
+                let findLongest = (node, word) => {
+                    if (node[$] && node[$] > max) {
+                        max = node[$];
+                        maxWord = word;
+                    }
+                    for (let p in node) {
+                        findLongest(node[p], word + p);
+                    }
+                }
+                findLongest(this.root, "");
+                console.log(maxWord, max);
+            }
+        }
+    
+        function randomWord(length) {
+            let word = '';
+            for (let i = 0; i < length; i++) {
+                word += String.fromCharCode(Math.random() * 26 + "a".charCodeAt(0));
+            }
+            return word;
+        }
+    
+        let tree = new Tree();
+    
+        for (let i = 0; i < 100000; i++) {
+            tree.insert(randomWord(4));
+        }
+    
+        console.log(tree)
+    </script>
+</body>
+</html>
