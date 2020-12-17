@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 可选作业：我们如何用状态机处理完全未知的 pattern？ （参考资料：字符串 KMP 算法 https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm）
+
+      class StringKmp {
+        #string
+        #pattern
+        constructor(string, pattern) {
+          this.#pattern = pattern
+          this.#string = string
+          this.j = 0
+        }
+
+        get table() {
+          return this.generateTable()
+        }
+        setString (string) {
+          this.#string = string
+        }
+        setPattern(pattern) {
+          this.#pattern = pattern
+        }
+        // 生成部分匹配值
+        generateTable() {
+          //计算tabel
+          let table = new Array(this.#pattern.length).fill(0)
+          let i = 1,
+            j = 0
+          while (i < this.#pattern.length) {
+            if (this.#pattern[i] == this.#pattern[j]) {
+              ++j, ++i
+              table[i] = j
+            } else {
+              if (j > 0) {
+                j = table[j]
+              } else {
+                ++i
+              }
+            }
+          }
+          return table
+        }
+
+        foundDynamic(c) {
+          if (c === this.#pattern[this.j]) {
+            ++this.j
+            if (this.j === this.#pattern.length) return this.end
+            return this.foundDynamic
+          } else if (this.j > 0) {
+            this.j = this.table[this.j]
+            return this.foundDynamic(c)
+          }
+          return this.foundDynamic
+        }
+
+        end() {
+          return this.end
+        }
+
+        match() {
+          if (this.#string === this.#pattern) return true
+          this.state = this.foundDynamic.bind(this)
+          for (let i = 0; i < this.#string.length; i++) {
+            this.state = this.state(this.#string[i])
+          }
+          // 重置j值
+          this.j = 0
+          return this.state === this.end
+        }
+      }
+
+      const stringKmp = new StringKmp('abababaxbabx', 'ababax')
+
+      console.log(stringKmp.match())
+    </script>
+  </body>
+</html>

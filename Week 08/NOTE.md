@@ -26,3 +26,8 @@ while(input) {
     state = state(input); // 把状态机的返回值作为下一个状态
 }
 ```
+
+
+# 字符转匹配的KMP算法
+
+[http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html](http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html)
